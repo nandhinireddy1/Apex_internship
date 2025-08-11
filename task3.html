@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PetPal Scheduler</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🐾 PetPal Scheduler</h1>
+    <div id="clock"></div>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2>Add Pet Task</h2>
+      <form id="petForm">
+        <input type="text" id="petName" placeholder="Pet Name" required />
+        <input type="text" id="task" placeholder="Task (Feed, Walk...)" required />
+        <input type="time" id="time" required />
+        <button type="submit">Add Task</button>
+      </form>
+      <p id="error" class="error-message"></p>
+    </section>
+
+    <section class="tasks-section">
+      <h2>Today's Tasks</h2>
+      <ul id="taskList"></ul>
+    </section>
+  </main>
+
+  <audio id="alertSound" src="C:\projects\Fanpage_project\pets\Whatsapp Notification Tone Download Ringtone - MobCup.Com.Co.mp3" preload="auto"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

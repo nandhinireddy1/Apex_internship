@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brain Booster Quiz</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 400vh;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 36px;
+    }
+
+    .container, .level-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      padding: 90px;
+      margin-top: 70px;
+      width: 900%;
+      max-width: 700px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .question {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .answers button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #61dafb;
+      color: #000;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .answers button:hover {
+      background-color: #21a1f1;
+    }
+
+    .correct {
+      background-color: #4caf50 !important;
+    }
+
+    .incorrect {
+      background-color: #f44336 !important;
+    }
+
+    .progress {
+      width: 100%;
+      background-color: #444;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background-color: #61dafb;
+      width: 0;
+      transition: width 0.4s;
+    }
+
+    .result {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #61dafb;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .levels {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap; /* Allows wrap on smaller screens */
+  margin-top: 20px;
+}
+
+.levels button {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, background 0.3s;
+}
+
+.levels button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+}
+
+
+    #hint-box {
+      margin-top: 10px;
+      font-style: italic;
+      font-size: 16px;
+      color: #fdd835;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Brain Booster Quiz</h1>
+
+  <div id="level-selection" class="level-container">
+    <h2><center>🎯 Select Level</center></h2>
+    <div class="levels">
+  <button onclick="startQuiz('easy')">😄 Easy</button>
+  <button onclick="startQuiz('medium')">😐 Medium</button>
+  <button onclick="startQuiz('hard')">🤯 Hard</button>
+  <button onclick="startQuiz('expert')">🚀 Expert</button> 
+  <button onclick="startQuiz('mixed')">🎲 Mixed</button> 
+</div>
+  </div>
+
+  <div class="container" id="quiz-container" style="display: none;">
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div id="hint-box"></div>
+    <div class="progress">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <button class="btn" onclick="showHint()">💡 Hint</button>
+    <button class="btn" onclick="nextQuestion()">➡️ Next</button>
+    <button class="btn" onclick="cancelQuiz()">❌ Cancel</button>
+  </div>
+
+  <div class="container" id="result-container" style="display: none;">
+    <div class="result" id="result"></div>
+    <button class="btn" onclick="goHome()">🏠 Home</button>
+  </div>
+
+  <script>
+    const questions = {
+      easy: [
+        { q: '🧮 What is 2 + 2?', a: ['3', '4', '5', '6'], correct: 1, hint: 'It’s even and comes after 3' },
+        { q: '🌤️ Which color is the sky?', a: ['Green', 'Blue', 'Red', 'Pink'], correct: 1, hint: 'It rhymes with glue' },
+        { q: '📅 How many days in a week?', a: ['5', '6', '7', '8'], correct: 2, hint: 'More than 6, less than 8' },
+        { q: '🐱 Which animal says "Meow"?', a: ['Dog', 'Cat', 'Cow', 'Duck'], correct: 1, hint: 'It loves milk' },
+        { q: '🏛️ Capital of India?', a: ['Mumbai', 'Delhi', 'Chennai', 'Kolkata'], correct: 1, hint: 'Red Fort is here' },
+        { q: '🍌 Which fruit is yellow?', a: ['Apple', 'Banana', 'Grapes', 'Blueberry'], correct: 1, hint: 'Monkeys love it!' },
+        { q: '🔷 Shape with 4 equal sides?', a: ['Circle', 'Triangle', 'Square', 'Rectangle'], correct: 2, hint: 'All sides same length' },
+        { q: '🔠 What comes after B?', a: ['C', 'D', 'E', 'F'], correct: 0, hint: 'It starts the word "Cat"' },
+        { q: '☔ Season after summer?', a: ['Winter', 'Autumn', 'Monsoon', 'Spring'], correct: 2, hint: 'It rains a lot' },
+        { q: '🌅 Sun rises in the?', a: ['North', 'East', 'West', 'South'], correct: 1, hint: 'Opposite of West' }
+      ],
+      medium: [
+        { q: '🏙️ Capital of France?', a: ['London', 'Berlin', 'Paris', 'Rome'], correct: 2, hint: 'City of Love' },
+        { q: '📚 Who wrote Harry Potter?', a: ['J.K. Rowling', 'Tolkien', 'Dan Brown', 'Shakespeare'], correct: 0, hint: 'British woman author' },
+        { q: '🔢 What is 10 * 10?', a: ['100', '1000', '10', '110'], correct: 0, hint: 'Two digits, perfect square' },
+        { q: '💻 Not a programming language?', a: ['Python', 'Java', 'HTML', 'Ruby'], correct: 2, hint: 'It’s a markup language' },
+        { q: '❄️ Water freezes at?', a: ['0°C', '50°C', '100°C', '-10°C'], correct: 0, hint: 'It’s the point ice forms' },
+        { q: '🗺️ Which continent is India in?', a: ['Asia', 'Europe', 'Africa', 'Australia'], correct: 0, hint: 'Largest continent' },
+        { q: '🔍 A search engine?', a: ['Facebook', 'Google', 'YouTube', 'Amazon'], correct: 1, hint: 'Starts with G' },
+        { q: '🌿 What gas do plants release?', a: ['CO2', 'Oxygen', 'Nitrogen', 'Helium'], correct: 1, hint: 'We need it to breathe' },
+        { q: '🔥 Boiling point of water?', a: ['100°C', '0°C', '90°C', '50°C'], correct: 0, hint: 'It’s also 212°F' },
+        { q: '🪐 Largest planet?', a: ['Earth', 'Mars', 'Jupiter', 'Venus'], correct: 2, hint: 'Named after a Roman god' }
+      ],
+      hard: [
+        { q: '🤖 Language for AI?', a: ['HTML', 'Python', 'CSS', 'SQL'], correct: 1, hint: 'It’s a snake too!' },
+        { q: '🔢 √144?', a: ['10', '11', '12', '13'], correct: 2, hint: '12 * 12' },
+        { q: '🧠 E=mc² is by?', a: ['Newton', 'Einstein', 'Bohr', 'Tesla'], correct: 1, hint: 'Famous German physicist' },
+        { q: '🩺 Organ that purifies blood?', a: ['Heart', 'Liver', 'Kidney', 'Lungs'], correct: 2, hint: 'Paired organ, filters waste' },
+        { q: '💧 Formula for water?', a: ['H2O', 'CO2', 'NaCl', 'O2'], correct: 0, hint: '2 Hydrogen + 1 Oxygen' },
+        { q: '🪐 Planet with rings?', a: ['Mars', 'Venus', 'Jupiter', 'Saturn'], correct: 3, hint: 'Starts with S' },
+        { q: '🏃‍♂️ Fastest land animal?', a: ['Tiger', 'Cheetah', 'Lion', 'Horse'], correct: 1, hint: 'Spotted sprinter' },
+        { q: '💻 Binary of 5?', a: ['101', '100', '110', '111'], correct: 0, hint: '1x2² + 0x2¹ + 1x2⁰' },
+        { q: '🌊 Deepest ocean?', a: ['Pacific', 'Atlantic', 'Indian', 'Arctic'], correct: 0, hint: 'It covers 30% of Earth' },
+        { q: '🎨 Painted Mona Lisa?', a: ['Van Gogh', 'Picasso', 'Da Vinci', 'Michelangelo'], correct: 2, hint: 'Also an inventor' }
+      ]
+    };
+
+    let currentLevel = '';
+    let currentQuestion = 0;
+    let score = 0;
+    let hintShown = false;
+
+    function startQuiz(level) {
+      currentLevel = level;
+      currentQuestion = 0;
+      score = 0;
+      hintShown = false;
+      document.getElementById('level-selection').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      document.getElementById('hint-box').innerText = '';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const qData = questions[currentLevel][currentQuestion];
+      document.getElementById('question').innerText = qData.q;
+      const answersDiv = document.getElementById('answers');
+      answersDiv.innerHTML = '';
+      document.getElementById('hint-box').innerText = '';
+      hintShown = false;
+
+      qData.a.forEach((ans, idx) => {
+        const btn = document.createElement('button');
+        btn.innerText = ans;
+        btn.onclick = () => selectAnswer(idx);
+        answersDiv.appendChild(btn);
+      });
+
+      document.getElementById('progress-bar').style.width = ((currentQuestion) / questions[currentLevel].length * 100) + '%';
+    }
+
+    function showHint() {
+      if (!hintShown) {
+        const hint = questions[currentLevel][currentQuestion].hint;
+        document.getElementById('hint-box').innerText = '💡 Hint: ' + hint;
+        hintShown = true;
+      }
+    }
+
+    function selectAnswer(index) {
+      const qData = questions[currentLevel][currentQuestion];
+      const buttons = document.querySelectorAll('#answers button');
+
+      buttons.forEach((btn, i) => {
+        if (i === qData.correct) btn.classList.add('correct');
+        else btn.classList.add('incorrect');
+        btn.disabled = true;
+      });
+
+      if (index === qData.correct) score++;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions[currentLevel].length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('result-container').style.display = 'block';
+      const total = questions[currentLevel].length;
+      document.getElementById('result').innerText = `🎉 You scored ${score} out of ${total}!`;
+    }
+
+    function goHome() {
+      document.getElementById('level-selection').style.display = 'block';
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('result-container').style.display = 'none';
+    }
+
+    function cancelQuiz() {
+      if (confirm('Are you sure you want to cancel the quiz?')) {
+        goHome();
+      }
+    }
+  </script>
+</body>
+</html>
