@@ -1,0 +1,7 @@
+<h2>Bidding on <%= item.name %></h2>
+<p><%= item.description %></p>
+<p>Current Price: $<%= item.price %></p>
+<form method="POST">
+  <input name="bid_amount" type="number" placeholder="Your Bid" required />
+  <button type="submit">Place Bid</button>
+</form>

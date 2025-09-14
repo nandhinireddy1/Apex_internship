@@ -1,0 +1,32 @@
+<!-- register.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Auction Platform</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="navbar">
+    <h2>Auction Platform</h2>
+    <div class="nav-links">
+      <a href="/login">Login</a>
+    </div>
+  </div>
+  <div class="container">
+    <h1>Register</h1>
+    <form action="/register" method="POST">
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" required>
+
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" required>
+
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required>
+
+      <button type="submit">Register</button>
+    </form>
+  </div>
+</body>
+</html>
