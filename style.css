@@ -1,81 +1,118 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #f2f2f2;
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background: linear-gradient(135deg, #f9f7d9, #a8e6cf, #dcedc1);
+  color: #333;
+  transition: all 0.3s;
 }
+
+
 
 header {
-  background: #4caf50;
-  color: white;
-  padding: 20px;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #0077ff;
+  color: greenyellow;
 }
 
-#clock {
-  font-size: 1.2rem;
-  margin-top: 5px;
+h1 {
+  margin: 0;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 main {
+  padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 30px;
-  padding: 20px;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.form-section, .tasks-section {
+.form-section, .transactions, .charts {
   background: white;
-  padding: 20px;
+  padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-form input, form button {
-  width: 100%;
-  margin: 10px 0;
-  padding: 10px;
+form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+input, select {
+  padding: 8px;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  border: 1px solid #ccc;
 }
 
-form button {
-  background: #4caf50;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.error-message {
-  color: red;
-  font-size: 0.9rem;
-}
-
-#taskList {
+#transactionList {
   list-style: none;
   padding: 0;
 }
 
-#taskList li {
-  background: #e8f5e9;
-  margin-bottom: 10px;
-  padding: 12px;
-  border-radius: 6px;
+#transactionList li {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  padding: 8px;
+  margin: 5px 0;
+  border-bottom: 1px solid #ddd;
 }
 
-#taskList li.completed {
-  text-decoration: line-through;
-  color: #888;
-  background: #d1ffd1;
+.dark {
+  background: linear-gradient(135deg, #1e1e2f, #2a2a40, #3a3a55);
+  color: limegreen;
 }
 
-.delete-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: #d32f2f;
+
+.dark header {
+  background: #222;
+}
+
+.dark .form-section,
+.dark .transactions,
+.dark .charts {
+  background: #2b2b40;
+}
+.charts canvas {
+  max-width: 250px;   /* reduce width */
+  max-height: 250px;  /* reduce height */
+  margin: auto;       /* center it */
+  display: block;
+}
+.form-section {
+  background: #fff0d1;  /* soft cream/orange */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.transactions {
+  background: #ffe6f0;  /* soft pink */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.charts {
+  background: #e0f7fa;  /* soft teal blue */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.skills-summary {
+  background: #e8f5e9;  /* soft green */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }

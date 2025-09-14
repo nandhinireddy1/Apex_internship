@@ -1,66 +1,94 @@
-const form = document.getElementById('petForm');
-const taskList = document.getElementById('taskList');
-const error = document.getElementById('error');
-const clock = document.getElementById('clock');
-const alertSound = document.getElementById('alertSound');
+const form = document.getElementById("transactionForm");
+const list = document.getElementById("transactionList");
+const filterCategory = document.getElementById("filterCategory");
+const toggleTheme = document.getElementById("toggleTheme");
 
-// Update live clock
-setInterval(() => {
-  const now = new Date();
-  clock.textContent = now.toLocaleTimeString();
-  checkTasks(now);
-}, 1000);
+let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 
-const tasks = [];
-
-form.addEventListener('submit', e => {
+// Add transaction
+form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const petName = document.getElementById('petName').value.trim();
-  const task = document.getElementById('task').value.trim();
-  const time = document.getElementById('time').value;
+  const title = document.getElementById("title").value;
+  const amount = +document.getElementById("amount").value;
+  const type = document.getElementById("type").value;
+  const category = document.getElementById("category").value;
 
-  if (!petName || !task || !time) {
-    error.textContent = 'All fields are required!';
-    return;
-  }
-  error.textContent = '';
+  const transaction = {
+    id: Date.now(),
+    title,
+    amount,
+    type,
+    category,
+    date: new Date().toLocaleDateString()
+  };
 
-  const taskObj = { petName, task, time };
-  tasks.push(taskObj);
-  displayTask(taskObj);
-
+  transactions.push(transaction);
+  localStorage.setItem("transactions", JSON.stringify(transactions));
   form.reset();
+  renderTransactions();
+  updateCharts();
 });
 
-function displayTask(taskObj) {
-  const li = document.createElement('li');
-  li.innerHTML = `<span><strong>${taskObj.petName}:</strong> ${taskObj.task} at ${taskObj.time}</span>`;
-
-  // Toggle complete
-  li.addEventListener('click', () => {
-    li.classList.toggle('completed');
-  });
-
-  // Delete button
-  const delBtn = document.createElement('button');
-  delBtn.textContent = '🗑️';
-  delBtn.className = 'delete-btn';
-  delBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    taskList.removeChild(li);
-    const index = tasks.findIndex(t => t.time === taskObj.time && t.task === taskObj.task && t.petName === taskObj.petName);
-    if (index > -1) tasks.splice(index, 1);
-  });
-
-  li.appendChild(delBtn);
-  taskList.appendChild(li);
+// Render list
+function renderTransactions() {
+  list.innerHTML = "";
+  const filter = filterCategory.value;
+  transactions
+    .filter(t => filter === "all" || t.category === filter)
+    .forEach(t => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span>${t.title} (${t.category}) - ${t.type} - $${t.amount} </span>
+        <span>${t.date}</span>
+      `;
+      list.appendChild(li);
+    });
 }
 
-function checkTasks(currentTime) {
-  const now = `${currentTime.getHours()}`.padStart(2, '0') + ":" + `${currentTime.getMinutes()}`.padStart(2, '0');
-  tasks.forEach(t => {
-    if (t.time === now) {
-      alertSound.play();
+// Charts
+let pieChart, barChart;
+function updateCharts() {
+  const expenses = transactions.filter(t => t.type === "expense");
+  const income = transactions.filter(t => t.type === "income");
+
+  const categoryTotals = {};
+  expenses.forEach(e => {
+    categoryTotals[e.category] = (categoryTotals[e.category] || 0) + e.amount;
+  });
+
+  // Pie Chart
+  if (pieChart) pieChart.destroy();
+  pieChart = new Chart(document.getElementById("pieChart"), {
+    type: "pie",
+    data: {
+      labels: Object.keys(categoryTotals),
+      datasets: [{
+        data: Object.values(categoryTotals),
+        backgroundColor: ["#ff6b6b", "#feca57", "#54a0ff", "#1dd1a1", "#5f27cd"]
+      }]
+    }
+  });
+
+  // Bar Chart
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById("barChart"), {
+    type: "bar",
+    data: {
+      labels: ["Income", "Expenses"],
+      datasets: [{
+        label: "Amount",
+        data: [income.reduce((a,b)=>a+b.amount,0), expenses.reduce((a,b)=>a+b.amount,0)],
+        backgroundColor: ["#1dd1a1", "#ff6b6b"]
+      }]
     }
   });
 }
+
+// Dark Mode
+toggleTheme.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+});
+
+// Initial Load
+renderTransactions();
+updateCharts();
